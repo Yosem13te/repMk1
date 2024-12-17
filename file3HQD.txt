@@ -1,43 +1,34 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
 int main() {
-    const vector<string> days = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-    const vector<string> subjects = { "Math", "Physics", "Chemistry", "Biology", "History" };
+ const string days[] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+ const string subjects[] = { "Math", "Physics", "Chemistry", "Biology", "History" };
 
-    ofstream scheduleFile("schedule.json");
-    if (!scheduleFile.is_open()) {
-        cerr << "Error: Unable to open output file." << endl;
-        return 1;
-    }
+ ofstream scheduleFile("schedule.json");
+ if (!scheduleFile.is_open()) {
+ cerr << "Error: Unable to open output file." << endl;
+ return 1;
+ }
 
-    scheduleFile << "{\n";
-    for (size_t i = 0; i < days.size(); ++i) {
-        scheduleFile << "    \"" << days[i] << "\": [\n";
-        for (size_t j = 0; j < subjects.size(); ++j) {
-            scheduleFile << "        \"" << subjects[j] << "\"";
-            if (j < subjects.size() - 1) {
-                scheduleFile << ",\n";
-            }
-            else {
-                scheduleFile << "\n";
-            }
-        }
-        scheduleFile << "    ]";
-        if (i < days.size() - 1) {
-            scheduleFile << ",\n";
-        }
-        else {
-            scheduleFile << "\n";
-        }
-    }
-    scheduleFile << "}\n";
-    scheduleFile.close();
-    cout << "Schedule written to 'schedule.json'" << endl;
+ scheduleFile << "{\n";
+ for (int i = 0; i < 7; ++i) {
+ scheduleFile << " \"" << days[i] << "\": [\n";
+ for (int j = 0; j < 5; ++j) {
+ scheduleFile << " \"" << subjects[j] << "\"";
+ if (j < 4) {
+ scheduleFile << ",\n";
+ }
+ }
+ scheduleFile << " ]\n";
+ }
+ scheduleFile << "}\n";
 
-    return 0;
+ scheduleFile.close();
+ cout << "Schedule written to 'schedule.json'" << endl;
+
+ return 0;
 }
