@@ -209,3 +209,100 @@ int main() {
     ИграВОчко();
     return 0;
 }
+
+\* Начиная со 112 строки нужно вписать вот это: 
+void playBlackjack() {
+    Deck deck;
+    Player player("Игрок");
+    Player dealer("Дилер");
+    int bitcoins = 1000;
+
+    while (bitcoins > 0) {
+        int bet;
+
+        // Начальное количество
+        do {
+            std::cout << "Введите вашу ставку (доступно: " << bitcoins << " биткоинов): ";
+            if (!(std::cin >> bet)) {
+                std::cout << "Некорректный ввод. Пожалуйста, введите целое число.\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        } while (bet <= 0 || bet > bitcoins);
+
+        player.clearHand();
+        dealer.clearHand();
+
+        // Подсчет карт
+        player.addCard(deck.draw());
+        player.addCard(deck.draw());
+        dealer.addCard(deck.draw());
+        dealer.addCard(deck.draw());
+
+        // Попытка игрока
+        while (!player.isBusted()) {
+            player.displayHand();
+            dealer.displayHand(false);
+
+            char choice;
+            std::cout << "Хотите взять еще карту? (y/n): ";
+            std::cin >> choice;
+
+            if (choice == 'y') {
+                player.addCard(deck.draw());
+            }
+            else {
+                break;
+            }
+        }
+
+
+        // Попытка дилера
+        if (!player.isBusted()) {
+            while (dealer.calculateHandValue() < 17) {
+                dealer.addCard(deck.draw());
+
+            }
+            dealer.displayHand(true);
+        }
+
+        // Определение победителя
+        int playerValue = player.calculateHandValue();
+        int dealerValue = dealer.calculateHandValue();
+
+        std::cout << "Ваши очки: " << playerValue << ", Очки дилера: " << dealerValue << std::endl;
+
+        if (player.isBusted()) {
+            std::cout << "Вы проиграли.\n";
+            bitcoins -= bet;
+        }
+        else if (dealer.isBusted() || playerValue > dealerValue) {
+            std::cout << "Вы выиграли! Ставка удваивается.\n";
+            bitcoins += bet;
+        }
+        else if (playerValue < dealerValue) {
+            std::cout << "Вы проиграли.\n";
+            bitcoins -= bet;
+        }
+        else {
+            std::cout << "Ничья! Ставка возвращается.\n";
+        }
+
+        std::cout << "У вас осталось " << bitcoins << " биткоинов.\n";
+
+        if (bitcoins <= 0) {
+            std::cout << "Вы проиграли все свои биткоины. Игра окончена!\n";
+            break;
+        }
+
+        std::cout << std::endl;
+    }
+}
+
+
+int main() {
+    std::setlocale(LC_ALL, "Russian");
+    playBlackjack();
+    return 0;
+}
+*\
